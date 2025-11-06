@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KFC 키오스크 - 2026 미래형 주문 시스템</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Pretendard', sans-serif;
+            background: #FFFFFF;
+            color: #000000;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #C8102E;
+            color: #FFFFFF;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 30px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .cart-icon {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #FFCC00;
+            color: #000000;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            min-height: 0;
+            margin-top: 80px;
+            height: calc(100% - 80px);
+        }
+
+        /* Left Sidebar - Categories */
+        .sidebar {
+            width: 250px;
+            background: #F5F5F5;
+            padding: 30px 0;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .category-item {
+            padding: 20px 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.18s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .category-item:hover,
+        .category-item.active {
+            background: #FFFFFF;
+            border-left-color: #C8102E;
+            color: #C8102E;
+        }
+
+        /* Center - Menu Grid */
+        .menu-section {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #000000;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .menu-item {
+            background: #FFFFFF;
+            border: 2px solid #E5E5E5;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            border-color: #C8102E;
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(200, 16, 46, 0.2);
+        }
+
+        .menu-image {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #FFCC00, #FF9900);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: #FFFFFF;
+        }
+
+        .menu-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #000000;
+        }
+
+        .menu-desc {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .menu-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #C8102E;
+            margin-bottom: 15px;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: #C8102E;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .btn-add:hover {
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+        }
+
+        /* Right Sidebar - Cart & Options */
+        .right-sidebar {
+            width: 400px;
+            background: #F9F9F9;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            min-height: 0;
+        }
+
+        .cart-section {
+            margin-bottom: 30px;
+        }
+
+        .cart-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            background: #FFFFFF;
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .cart-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cart-item-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .cart-item-remove {
+            background: none;
+            border: none;
+            color: #C8102E;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 5px;
+        }
+
+        .cart-item-options {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 10px;
+        }
+
+        .cart-item-request {
+            font-size: 13px;
+            color: #C8102E;
+            font-style: italic;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #FFF5F5;
+            border-radius: 4px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-quantity {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #C8102E;
+            background: #FFFFFF;
+            color: #C8102E;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.18s ease;
+        }
+
+        .btn-quantity:hover {
+            background: #C8102E;
+            color: #FFFFFF;
+        }
+
+        .quantity {
+            font-size: 16px;
+            font-weight: 700;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .cart-item-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #C8102E;
+        }
+
+        .custom-request-section {
+            margin-bottom: 30px;
+        }
+
+        .request-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #000000;
+        }
+
+        .request-input-group {
+            margin-bottom: 15px;
+        }
+
+        .request-label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+            color: #000000;
+        }
+
+        .request-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E5E5E5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: all 0.18s ease;
+        }
+
+        .request-input:focus {
+            outline: none;
+            border-color: #C8102E;
+        }
+
+        .voice-btn {
+            width: 100%;
+            padding: 12px;
+            background: #C8102E;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .voice-btn:hover {
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+        }
+
+        .voice-btn.recording {
+            background: #FFCC00;
+            color: #000000;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .request-examples {
+            font-size: 12px;
+            color: #666666;
+            margin-top: 8px;
+        }
+
+        /* Discount Section */
+        .discount-section {
+            margin-bottom: 30px;
+        }
+
+        .discount-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #000000;
+        }
+
+        .discount-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .discount-option {
+            padding: 12px;
+            background: #FFFFFF;
+            border: 2px solid #E5E5E5;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .discount-option:hover {
+            border-color: #C8102E;
+        }
+
+        .discount-option.selected {
+            background: #C8102E;
+            color: #FFFFFF;
+            border-color: #C8102E;
+        }
+
+        .discount-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .discount-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .discount-desc {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .discount-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: #FFCC00;
+        }
+
+        .discount-option.selected .discount-amount {
+            color: #FFCC00;
+        }
+
+        /* Total & Checkout */
+        .cart-total {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 2px solid #E5E5E5;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .total-row.total {
+            font-size: 24px;
+            font-weight: 700;
+            color: #C8102E;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #E5E5E5;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 18px;
+            background: #C8102E;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.18s ease;
+        }
+
+        .btn-checkout:hover {
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+        }
+
+        .btn-checkout:disabled {
+            background: #CCCCCC;
+            color: #666666;
+            cursor: not-allowed;
+        }
+
+        /* Modal - Menu Detail */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #666666;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #C8102E;
+        }
+
+        .modal-image {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #FFCC00, #FF9900);
+            border-radius: 8px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: #FFFFFF;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #000000;
+        }
+
+        .modal-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #C8102E;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-section {
+            margin-bottom: 30px;
+        }
+
+        .modal-section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #000000;
+            border-bottom: 2px solid #C8102E;
+            padding-bottom: 10px;
+        }
+
+        .modal-section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333333;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .nutrition-item {
+            background: #F5F5F5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .nutrition-label {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 5px;
+        }
+
+        .nutrition-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .allergy-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .allergy-tag {
+            background: #FFF5F5;
+            color: #C8102E;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .btn-modal-primary {
+            background: #C8102E;
+            color: #FFFFFF;
+        }
+
+        .btn-modal-primary:hover {
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+        }
+
+        .btn-modal-secondary {
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+        }
+
+        .btn-modal-secondary:hover {
+            background: #C8102E;
+            color: #FFFFFF;
+        }
+
+        /* Empty States */
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666666;
+        }
+
+        .empty-cart-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart-text {
+            font-size: 18px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            background: #C8102E;
+            color: #FFFFFF;
+            padding: 20px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F5F5F5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C8102E;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A00D25;
+        }
+
+        /* Home Screen */
+        .home-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #C8102E 0%, #FFCC00 100%);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .home-logo {
+            font-size: 120px;
+            font-weight: 900;
+            margin: 0 0 30px 0;
+            letter-spacing: 8px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .home-subtitle {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            color: #FFCC00;
+        }
+
+        .home-description {
+            font-size: 24px;
+            margin: 0 0 50px 0;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        .home-features {
+            display: flex;
+            gap: 40px;
+            margin: 0 0 50px 0;
+        }
+
+        .home-feature {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            min-width: 250px;
+        }
+
+        .home-feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .home-feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .home-feature-desc {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .btn-home {
+            padding: 25px 80px;
+            background: #FFFFFF;
+            color: #C8102E;
+            border: none;
+            border-radius: 12px;
+            font-size: 32px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            margin: 0;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-home:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-back-home {
+            padding: 12px 24px;
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            margin-left: 20px;
+        }
+
+        .btn-back-home:hover {
+            background: #C8102E;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Screen -->
+    <div class="screen active" id="homeScreen">
+        <div class="home-screen">
+            <div class="home-logo">KFC</div>
+            <div class="home-subtitle">2026 미래형 키오스크</div>
+            <div class="home-description">
+                요청사항을 입력할 수 있는 주문 시스템입니다.<br>
+                세부 요청사항, 할인/쿠폰, 메뉴 상세 정보를 쉽게 확인하고 주문하세요!
+            </div>
+            <div class="home-features">
+                <div class="home-feature">
+                    <div class="home-feature-icon">🎤</div>
+                    <div class="home-feature-title">음성 요청사항</div>
+                    <div class="home-feature-desc">음성으로 쉽게 요청사항 입력</div>
+                </div>
+                <div class="home-feature">
+                    <div class="home-feature-icon">💰</div>
+                    <div class="home-feature-title">할인/쿠폰</div>
+                    <div class="home-feature-desc">다양한 할인 혜택 쉽게 적용</div>
+                </div>
+                <div class="home-feature">
+                    <div class="home-feature-icon">📋</div>
+                    <div class="home-feature-title">상세 정보</div>
+                    <div class="home-feature-desc">영양정보, 알레르기 정보 확인</div>
+                </div>
+            </div>
+            <button class="btn-home" onclick="showOrderScreen()">
+                주문 시작하기
+            </button>
+        </div>
+    </div>
+
+    <!-- Order Screen -->
+    <div class="screen" id="orderScreen">
+        <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">KFC 키오스크</div>
+            <div class="header-info">
+                <span>요청사항을 입력할 수 있는 주문 시스템입니다</span>
+                <button class="btn-back-home" onclick="showHomeScreen()">홈으로</button>
+                <div class="cart-icon" onclick="scrollToCart()">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Sidebar - Categories -->
+            <div class="sidebar" id="sidebar">
+                <div class="category-item active" data-category="all">전체 메뉴</div>
+                <div class="category-item" data-category="chicken">치킨</div>
+                <div class="category-item" data-category="burger">버거</div>
+                <div class="category-item" data-category="set">세트</div>
+                <div class="category-item" data-category="side">사이드</div>
+                <div class="category-item" data-category="drink">음료</div>
+            </div>
+
+            <!-- Center - Menu Grid -->
+            <div class="menu-section">
+                <h2 class="section-title" id="sectionTitle">전체 메뉴</h2>
+                <div class="menu-grid" id="menuGrid">
+                    <!-- Menu items will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Right Sidebar - Cart & Options -->
+            <div class="right-sidebar">
+                <!-- Cart Section -->
+                <div class="cart-section">
+                    <h3 class="cart-title">주문 내역</h3>
+                    <div class="cart-items" id="cartItems">
+                        <div class="empty-cart">
+                            <div class="empty-cart-icon">🛒</div>
+                            <div class="empty-cart-text">장바구니가 비어있습니다</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Request Section -->
+                <div class="custom-request-section">
+                    <h3 class="request-title">세부 요청사항</h3>
+                    <div class="request-input-group">
+                        <label class="request-label">요청사항 입력</label>
+                        <input type="text" class="request-input" id="requestInput" placeholder="예: 소스 빼주세요, 얼음 적게 주세요">
+                        <div class="request-examples">💡 예시: 소스 제외, 얼음 적게, 양념 추가 등</div>
+                    </div>
+                    <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecognition()">
+                        <span>🎤</span>
+                        <span id="voiceBtnText">음성으로 입력하기</span>
+                    </button>
+                </div>
+
+                <!-- Discount Section -->
+                <div class="discount-section">
+                    <h3 class="discount-title">할인/쿠폰</h3>
+                    <div class="discount-options" id="discountOptions">
+                        <div class="discount-option" data-discount="none" onclick="selectDiscount('none')">
+                            <div class="discount-info">
+                                <div class="discount-name">할인 없음</div>
+                            </div>
+                        </div>
+                        <div class="discount-option" data-discount="student" onclick="selectDiscount('student')">
+                            <div class="discount-info">
+                                <div class="discount-name">학생 할인</div>
+                                <div class="discount-desc">학생증 제시 시</div>
+                            </div>
+                            <div class="discount-amount">10%</div>
+                        </div>
+                        <div class="discount-option" data-discount="coupon1" onclick="selectDiscount('coupon1')">
+                            <div class="discount-info">
+                                <div class="discount-name">통신사 할인</div>
+                                <div class="discount-desc">통신사 고객 혜택</div>
+                            </div>
+                            <div class="discount-amount">5%</div>
+                        </div>
+                        <div class="discount-option" data-discount="coupon2" onclick="selectDiscount('coupon2')">
+                            <div class="discount-info">
+                                <div class="discount-name">프로모션 쿠폰</div>
+                                <div class="discount-desc">이벤트 쿠폰</div>
+                            </div>
+                            <div class="discount-amount">3,000원</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total & Checkout -->
+                <div class="cart-total">
+                    <div class="total-row">
+                        <span>주문 금액</span>
+                        <span id="subtotal">0원</span>
+                    </div>
+                    <div class="total-row">
+                        <span>할인 금액</span>
+                        <span id="discountAmount">-0원</span>
+                    </div>
+                    <div class="total-row total">
+                        <span>총 결제 금액</span>
+                        <span id="totalAmount">0원</span>
+                    </div>
+                    <button class="btn-checkout" id="checkoutBtn" onclick="checkout()" disabled>
+                        주문하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Menu Detail -->
+    <div class="modal" id="menuModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-image" id="modalImage">🍗</div>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <div class="modal-price" id="modalPrice"></div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">메뉴 설명</div>
+                <div class="modal-section-content" id="modalDescription"></div>
+            </div>
+
+            <div class="modal-section">
+                <div class="modal-section-title">영양 정보</div>
+                <div class="nutrition-grid" id="modalNutrition"></div>
+            </div>
+
+            <div class="modal-section">
+                <div class="modal-section-title">알레르기 유발 성분</div>
+                <div class="allergy-list" id="modalAllergy"></div>
+            </div>
+
+            <div class="modal-section">
+                <div class="modal-section-title">재료 원산지</div>
+                <div class="modal-section-content" id="modalOrigin"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-modal-secondary" onclick="closeModal()">닫기</button>
+                <button class="btn-modal btn-modal-primary" id="modalAddBtn" onclick="addFromModal()">장바구니에 추가</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Menu Data
+        const menuData = {
+            chicken: [
+                {
+                    id: 'chicken1',
+                    name: '오리지널 치킨',
+                    description: 'KFC만의 비법으로 튀긴 바삭한 치킨',
+                    price: 18000,
+                    category: 'chicken',
+                    emoji: '🍗',
+                    nutrition: { calories: 320, protein: 25, fat: 18, carbs: 15 },
+                    allergy: ['밀', '계란'],
+                    origin: '국내산 닭고기 100% 사용'
+                },
+                {
+                    id: 'chicken2',
+                    name: '핫 크리스피 치킨',
+                    description: '매콤달콤한 양념으로 얼큰하게',
+                    price: 19000,
+                    category: 'chicken',
+                    emoji: '🌶️🍗',
+                    nutrition: { calories: 340, protein: 26, fat: 19, carbs: 18 },
+                    allergy: ['밀', '계란', '대두'],
+                    origin: '국내산 닭고기 100% 사용'
+                },
+                {
+                    id: 'chicken3',
+                    name: '치킨 버거',
+                    description: '바삭한 치킨 패티가 들어간 버거',
+                    price: 6500,
+                    category: 'chicken',
+                    emoji: '🍔',
+                    nutrition: { calories: 420, protein: 22, fat: 22, carbs: 35 },
+                    allergy: ['밀', '계란', '우유'],
+                    origin: '국내산 닭고기, 국산 양배추 사용'
+                }
+            ],
+            burger: [
+                {
+                    id: 'burger1',
+                    name: '징거 버거',
+                    description: 'KFC의 대표 버거',
+                    price: 5500,
+                    category: 'burger',
+                    emoji: '🍔',
+                    nutrition: { calories: 380, protein: 20, fat: 18, carbs: 32 },
+                    allergy: ['밀', '계란', '우유'],
+                    origin: '국내산 닭고기, 국산 양배추 사용'
+                },
+                {
+                    id: 'burger2',
+                    name: '타워 버거',
+                    description: '치킨, 베이컨, 치즈가 들어간 프리미엄 버거',
+                    price: 7500,
+                    category: 'burger',
+                    emoji: '🍔',
+                    nutrition: { calories: 520, protein: 28, fat: 25, carbs: 38 },
+                    allergy: ['밀', '계란', '우유', '돼지고기'],
+                    origin: '국내산 닭고기, 수입산 베이컨 사용'
+                },
+                {
+                    id: 'burger3',
+                    name: '새우 버거',
+                    description: '통통한 새우가 들어간 버거',
+                    price: 6500,
+                    category: 'burger',
+                    emoji: '🍤🍔',
+                    nutrition: { calories: 350, protein: 18, fat: 15, carbs: 30 },
+                    allergy: ['밀', '계란', '갑각류'],
+                    origin: '수입산 새우 사용'
+                }
+            ],
+            set: [
+                {
+                    id: 'set1',
+                    name: '치킨 버거 세트',
+                    description: '치킨 버거 + 감자튀김 + 콜라',
+                    price: 8500,
+                    category: 'set',
+                    emoji: '🍔🍟🥤',
+                    nutrition: { calories: 680, protein: 25, fat: 28, carbs: 75 },
+                    allergy: ['밀', '계란', '우유'],
+                    origin: '국내산 닭고기, 국산 감자 사용'
+                },
+                {
+                    id: 'set2',
+                    name: '징거 버거 세트',
+                    description: '징거 버거 + 감자튀김 + 콜라',
+                    price: 7500,
+                    category: 'set',
+                    emoji: '🍔🍟🥤',
+                    nutrition: { calories: 620, protein: 23, fat: 25, carbs: 68 },
+                    allergy: ['밀', '계란', '우유'],
+                    origin: '국내산 닭고기, 국산 감자 사용'
+                },
+                {
+                    id: 'set3',
+                    name: '치킨 2조각 세트',
+                    description: '치킨 2조각 + 감자튀김 + 콜라',
+                    price: 12000,
+                    category: 'set',
+                    emoji: '🍗🍟🥤',
+                    nutrition: { calories: 720, protein: 35, fat: 32, carbs: 55 },
+                    allergy: ['밀', '계란'],
+                    origin: '국내산 닭고기 100% 사용'
+                }
+            ],
+            side: [
+                {
+                    id: 'side1',
+                    name: '감자튀김',
+                    description: '바삭바삭한 감자튀김',
+                    price: 2500,
+                    category: 'side',
+                    emoji: '🍟',
+                    nutrition: { calories: 280, protein: 4, fat: 14, carbs: 35 },
+                    allergy: [],
+                    origin: '국산 감자 사용'
+                },
+                {
+                    id: 'side2',
+                    name: '치즈스틱',
+                    description: '쫄깃한 치즈스틱',
+                    price: 3500,
+                    category: 'side',
+                    emoji: '🧀',
+                    nutrition: { calories: 220, protein: 12, fat: 15, carbs: 10 },
+                    allergy: ['우유'],
+                    origin: '수입산 치즈 사용'
+                },
+                {
+                    id: 'side3',
+                    name: '양념소스',
+                    description: 'KFC 특제 양념소스',
+                    price: 500,
+                    category: 'side',
+                    emoji: '🥫',
+                    nutrition: { calories: 45, protein: 1, fat: 2, carbs: 6 },
+                    allergy: ['대두'],
+                    origin: '국내 제조'
+                }
+            ],
+            drink: [
+                {
+                    id: 'drink1',
+                    name: '콜라',
+                    description: '시원한 콜라',
+                    price: 2000,
+                    category: 'drink',
+                    emoji: '🥤',
+                    nutrition: { calories: 150, protein: 0, fat: 0, carbs: 38 },
+                    allergy: [],
+                    origin: '국내 제조'
+                },
+                {
+                    id: 'drink2',
+                    name: '사이다',
+                    description: '시원한 사이다',
+                    price: 2000,
+                    category: 'drink',
+                    emoji: '🥤',
+                    nutrition: { calories: 140, protein: 0, fat: 0, carbs: 35 },
+                    allergy: [],
+                    origin: '국내 제조'
+                },
+                {
+                    id: 'drink3',
+                    name: '오렌지 주스',
+                    description: '상큼한 오렌지 주스',
+                    price: 2500,
+                    category: 'drink',
+                    emoji: '🧃',
+                    nutrition: { calories: 110, protein: 1, fat: 0, carbs: 26 },
+                    allergy: [],
+                    origin: '수입산 오렌지 사용'
+                }
+            ]
+        };
+
+        // Application State
+        let currentCategory = 'all';
+        let cart = [];
+        let selectedDiscount = 'none';
+        let currentRequest = '';
+        let selectedMenuItem = null;
+        let isRecording = false;
+        let recognition = null;
+        let currentScreen = 'home';
+        let speechSynthesis = null;
+        let isVoiceGuideEnabled = true;
+
+        // Screen Management
+        function showHomeScreen() {
+            stopSpeaking();
+            document.getElementById('homeScreen').classList.add('active');
+            document.getElementById('orderScreen').classList.remove('active');
+            currentScreen = 'home';
+            setTimeout(() => {
+                speak('홈 화면입니다. 주문을 시작하려면 주문 시작하기 버튼을 눌러주세요.');
+            }, 300);
+        }
+
+        function showOrderScreen() {
+            stopSpeaking();
+            document.getElementById('homeScreen').classList.remove('active');
+            document.getElementById('orderScreen').classList.add('active');
+            currentScreen = 'order';
+            // Initialize order screen if needed
+            if (cart.length === 0) {
+                renderMenu();
+            }
+            setTimeout(() => {
+                speak('주문 화면입니다. 원하는 메뉴를 선택하거나 카테고리를 선택하여 메뉴를 확인하세요.');
+            }, 300);
+        }
+
+        // Update Cart Count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = cart.length;
+            }
+        }
+
+        // Voice Guide Functions
+        function speak(text, priority = false) {
+            if (!isVoiceGuideEnabled) return;
+            
+            if ('speechSynthesis' in window) {
+                // 기존 음성 중지
+                if (speechSynthesis.speaking && !priority) {
+                    speechSynthesis.cancel();
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ko-KR';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                utterance.volume = 0.8;
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function stopSpeaking() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+        }
+
+        // Initialize
+        function init() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis = window.speechSynthesis;
+            }
+            showHomeScreen();
+            setupCategoryClick();
+            setupVoiceRecognition();
+            updateCartCount();
+            
+            // 초기 음성 안내
+            setTimeout(() => {
+                speak('KFC 키오스크에 오신 것을 환영합니다. 주문 시작하기 버튼을 눌러주세요.');
+            }, 500);
+        }
+
+        // Setup Voice Recognition
+        function setupVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'ko-KR';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('requestInput').value = transcript;
+                    currentRequest = transcript;
+                    showNotification('요청사항이 입력되었습니다: ' + transcript);
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    showNotification('음성 인식 오류가 발생했습니다.');
+                };
+
+                recognition.onend = function() {
+                    isRecording = false;
+                    updateVoiceButton();
+                };
+            } else {
+                document.getElementById('voiceBtn').style.display = 'none';
+            }
+        }
+
+        // Toggle Voice Recognition
+        function toggleVoiceRecognition() {
+            if (!recognition) {
+                showNotification('이 브라우저는 음성 인식을 지원하지 않습니다.');
+                return;
+            }
+
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+            } else {
+                recognition.start();
+                isRecording = true;
+            }
+            updateVoiceButton();
+        }
+
+        // Update Voice Button
+        function updateVoiceButton() {
+            const btn = document.getElementById('voiceBtn');
+            const text = document.getElementById('voiceBtnText');
+            if (isRecording) {
+                btn.classList.add('recording');
+                text.textContent = '음성 인식 중... (다시 클릭하여 중지)';
+            } else {
+                btn.classList.remove('recording');
+                text.textContent = '음성으로 입력하기';
+            }
+        }
+
+        // Setup Category Click
+        function setupCategoryClick() {
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.dataset.category;
+                    
+                    const categoryNames = {
+                        'all': '전체 메뉴',
+                        'chicken': '치킨',
+                        'burger': '버거',
+                        'set': '세트',
+                        'side': '사이드',
+                        'drink': '음료'
+                    };
+                    
+                    const categoryName = categoryNames[currentCategory] || '전체 메뉴';
+                    speak(categoryName + ' 카테고리를 선택하셨습니다.');
+                    
+                    renderMenu();
+                });
+            });
+        }
+
+        // Render Menu
+        function renderMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            const sectionTitle = document.getElementById('sectionTitle');
+            
+            if (!menuGrid || !sectionTitle) return;
+            
+            const categoryNames = {
+                'all': '전체 메뉴',
+                'chicken': '치킨',
+                'burger': '버거',
+                'set': '세트',
+                'side': '사이드',
+                'drink': '음료'
+            };
+            
+            sectionTitle.textContent = categoryNames[currentCategory] || '전체 메뉴';
+            
+            let itemsToShow = [];
+            if (currentCategory === 'all') {
+                Object.values(menuData).forEach(categoryItems => {
+                    itemsToShow = itemsToShow.concat(categoryItems);
+                });
+            } else {
+                itemsToShow = menuData[currentCategory] || [];
+            }
+
+            menuGrid.innerHTML = itemsToShow.map(item => `
+                <div class="menu-item" onclick="showMenuDetail('${item.id}')">
+                    <div class="menu-image">${item.emoji}</div>
+                    <div class="menu-name">${item.name}</div>
+                    <div class="menu-desc">${item.description}</div>
+                    <div class="menu-price">${formatPrice(item.price)}</div>
+                    <button class="btn-add" onclick="event.stopPropagation(); addToCart('${item.id}')">
+                        장바구니에 추가
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Show Menu Detail
+        function showMenuDetail(itemId) {
+            const item = findMenuItem(itemId);
+            if (!item) return;
+
+            selectedMenuItem = item;
+            document.getElementById('modalTitle').textContent = item.name;
+            document.getElementById('modalPrice').textContent = formatPrice(item.price);
+            document.getElementById('modalDescription').textContent = item.description;
+            document.getElementById('modalImage').textContent = item.emoji;
+            
+            // 음성 안내
+            speak(`${item.name}의 상세 정보입니다. 가격은 ${formatPrice(item.price)}입니다. ${item.description}`);
+            
+            // Nutrition
+            const nutritionHtml = `
+                <div class="nutrition-item">
+                    <div class="nutrition-label">칼로리</div>
+                    <div class="nutrition-value">${item.nutrition.calories} kcal</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="nutrition-label">단백질</div>
+                    <div class="nutrition-value">${item.nutrition.protein} g</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="nutrition-label">지방</div>
+                    <div class="nutrition-value">${item.nutrition.fat} g</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="nutrition-label">탄수화물</div>
+                    <div class="nutrition-value">${item.nutrition.carbs} g</div>
+                </div>
+            `;
+            document.getElementById('modalNutrition').innerHTML = nutritionHtml;
+            
+            // Allergy
+            const allergyHtml = item.allergy.length > 0
+                ? item.allergy.map(a => `<span class="allergy-tag">${a}</span>`).join('')
+                : '<span class="allergy-tag">없음</span>';
+            document.getElementById('modalAllergy').innerHTML = allergyHtml;
+            
+            // Origin
+            document.getElementById('modalOrigin').textContent = item.origin;
+            
+            document.getElementById('menuModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('menuModal').classList.remove('active');
+            selectedMenuItem = null;
+        }
+
+        // Add from Modal
+        function addFromModal() {
+            if (selectedMenuItem) {
+                addToCart(selectedMenuItem.id);
+                closeModal();
+            }
+        }
+
+        // Find Menu Item
+        function findMenuItem(itemId) {
+            for (const category of Object.values(menuData)) {
+                const item = category.find(i => i.id === itemId);
+                if (item) return item;
+            }
+            return null;
+        }
+
+        // Add to Cart
+        function addToCart(itemId) {
+            const item = findMenuItem(itemId);
+            if (!item) return;
+
+            const request = document.getElementById('requestInput').value.trim();
+            const cartItem = {
+                ...item,
+                cartId: Date.now(),
+                quantity: 1,
+                request: request || ''
+            };
+
+            cart.push(cartItem);
+            const requestInput = document.getElementById('requestInput');
+            if (requestInput) {
+                requestInput.value = '';
+            }
+            currentRequest = '';
+            
+            updateCart();
+            updateCartCount();
+            showNotification(`${item.name}이(가) 장바구니에 추가되었습니다.`);
+            speak(`${item.name}이 장바구니에 추가되었습니다.`);
+        }
+
+        // Remove from Cart
+        function removeFromCart(cartId) {
+            cart = cart.filter(item => item.cartId !== cartId);
+            updateCart();
+            updateCartCount();
+            showNotification('항목이 장바구니에서 제거되었습니다.');
+        }
+
+        // Update Quantity
+        function updateQuantity(cartId, delta) {
+            const item = cart.find(i => i.cartId === cartId);
+            if (item) {
+                item.quantity = Math.max(1, item.quantity + delta);
+                updateCart();
+                updateCartCount();
+            }
+        }
+
+        // Update Cart
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            updateCartCount();
+            
+            if (checkoutBtn) {
+                checkoutBtn.disabled = cart.length === 0;
+            }
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <div class="empty-cart-text">장바구니가 비어있습니다</div>
+                    </div>
+                `;
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-header">
+                            <div class="cart-item-name">${item.name}</div>
+                            <button class="cart-item-remove" onclick="removeFromCart(${item.cartId})">×</button>
+                        </div>
+                        ${item.request ? `<div class="cart-item-request">💬 ${item.request}</div>` : ''}
+                        <div class="cart-item-controls">
+                            <div class="quantity-controls">
+                                <button class="btn-quantity" onclick="updateQuantity(${item.cartId}, -1)">−</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="btn-quantity" onclick="updateQuantity(${item.cartId}, 1)">+</button>
+                            </div>
+                            <div class="cart-item-price">${formatPrice(item.price * item.quantity)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateTotal();
+        }
+
+        // Update Total
+        function updateTotal() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+
+            if (selectedDiscount === 'student') {
+                discount = subtotal * 0.1;
+            } else if (selectedDiscount === 'coupon1') {
+                discount = subtotal * 0.05;
+            } else if (selectedDiscount === 'coupon2') {
+                discount = 3000;
+            }
+
+            const total = subtotal - discount;
+
+            document.getElementById('subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('discountAmount').textContent = formatPrice(-discount);
+            document.getElementById('totalAmount').textContent = formatPrice(total);
+        }
+
+        // Select Discount
+        function selectDiscount(discountType) {
+            selectedDiscount = discountType;
+            document.querySelectorAll('.discount-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            const selectedOption = document.querySelector(`[data-discount="${discountType}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            updateTotal();
+            
+            const discountNames = {
+                'none': '할인 없음',
+                'student': '학생 할인 10퍼센트',
+                'coupon1': '통신사 할인 5퍼센트',
+                'coupon2': '프로모션 쿠폰 3천원'
+            };
+            
+            if (discountType !== 'none') {
+                showNotification('할인이 적용되었습니다.');
+                speak(discountNames[discountType] + '이 적용되었습니다.');
+            } else {
+                speak('할인이 해제되었습니다.');
+            }
+        }
+
+        // Format Price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('ko-KR').format(price) + '원';
+        }
+
+        // Show Notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('active');
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 3000);
+        }
+
+        // Scroll to Cart
+        function scrollToCart() {
+            const rightSidebar = document.querySelector('.right-sidebar');
+            const cartSection = document.querySelector('.cart-section');
+            if (rightSidebar && cartSection) {
+                // right-sidebar 내부에서만 스크롤 (페이지 전체 스크롤 방지)
+                const sidebarTop = rightSidebar.scrollTop;
+                const cartTop = cartSection.offsetTop;
+                
+                rightSidebar.scrollTo({
+                    top: cartTop - 20, // 약간의 여백
+                    behavior: 'smooth'
+                });
+                
+                speak('장바구니로 이동했습니다. 현재 장바구니에 ' + cart.length + '개의 항목이 있습니다.');
+            } else if (rightSidebar) {
+                // right-sidebar 상단으로 스크롤
+                rightSidebar.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Checkout
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('장바구니가 비어있습니다.');
+                speak('장바구니가 비어있습니다. 메뉴를 추가해주세요.');
+                return;
+            }
+
+            const requestInput = document.getElementById('requestInput');
+            const request = requestInput ? requestInput.value.trim() : '';
+            if (request) {
+                // Apply request to last item if there's a request in input
+                if (cart.length > 0) {
+                    cart[cart.length - 1].request = request;
+                }
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+
+            if (selectedDiscount === 'student') {
+                discount = total * 0.1;
+            } else if (selectedDiscount === 'coupon1') {
+                discount = total * 0.05;
+            } else if (selectedDiscount === 'coupon2') {
+                discount = 3000;
+            }
+
+            const finalTotal = total - discount;
+
+            const orderSummary = cart.map(item => 
+                `${item.name} x${item.quantity}${item.request ? ` (${item.request})` : ''}`
+            ).join('\n');
+
+            speak(`주문이 완료되었습니다. 최종 결제 금액은 ${formatPrice(finalTotal)}입니다. 요청사항이 직원에게 전달되었습니다.`, true);
+            
+            alert(`주문이 완료되었습니다!\n\n주문 내역:\n${orderSummary}\n\n할인: ${formatPrice(-discount)}\n최종 결제 금액: ${formatPrice(finalTotal)}\n\n요청사항이 직원에게 전달되었습니다.`);
+            
+            // Reset
+            cart = [];
+            selectedDiscount = 'none';
+            if (requestInput) {
+                requestInput.value = '';
+            }
+            currentRequest = '';
+            const discountOptions = document.querySelectorAll('.discount-option');
+            discountOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            const noneOption = document.querySelector('[data-discount="none"]');
+            if (noneOption) {
+                noneOption.classList.add('selected');
+            }
+            updateCart();
+            renderMenu();
+            showNotification('주문이 완료되었습니다!');
+            // Return to home after 2 seconds
+            setTimeout(() => {
+                showHomeScreen();
+            }, 2000);
+        }
+
+        // Request Input Change
+        const requestInput = document.getElementById('requestInput');
+        if (requestInput) {
+            requestInput.addEventListener('input', function(e) {
+                currentRequest = e.target.value;
+            });
+        }
+
+        // Close modal on outside click
+        const menuModal = document.getElementById('menuModal');
+        if (menuModal) {
+            menuModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
+
