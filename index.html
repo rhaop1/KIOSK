@@ -789,87 +789,116 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #C8102E 0%, #FFCC00 100%);
-            color: #FFFFFF;
+            background: #FFFFFF;
+            color: #000000;
             text-align: center;
-            padding: 40px;
+            padding: 60px 40px;
             box-sizing: border-box;
             overflow-y: auto;
+            position: relative;
+        }
+
+        .home-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #C8102E 0%, #FFCC00 100%);
         }
 
         .home-logo {
-            font-size: 120px;
+            font-size: 80px;
             font-weight: 900;
-            margin: 0 0 30px 0;
-            letter-spacing: 8px;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+            margin: 0 0 25px 0;
+            letter-spacing: 4px;
+            color: #C8102E;
         }
 
         .home-subtitle {
-            font-size: 36px;
-            font-weight: 700;
-            margin: 0 0 20px 0;
-            color: #FFCC00;
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0 0 50px 0;
+            color: #444444;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .home-description {
             font-size: 24px;
-            margin: 0 0 50px 0;
-            max-width: 800px;
-            line-height: 1.6;
+            margin: 0 0 70px 0;
+            max-width: 700px;
+            line-height: 1.8;
+            color: #222222;
+            font-weight: 400;
         }
 
         .home-features {
             display: flex;
-            gap: 40px;
-            margin: 0 0 50px 0;
+            gap: 50px;
+            margin: 0 0 70px 0;
+            max-width: 1000px;
         }
 
         .home-feature {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 30px;
+            background: #FFFFFF;
+            padding: 45px 35px;
             border-radius: 12px;
-            min-width: 250px;
+            flex: 1;
+            border: 2px solid #E5E5E5;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .home-feature:hover {
+            border-color: #C8102E;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(200, 16, 46, 0.15);
         }
 
         .home-feature-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 40px;
+            margin-bottom: 25px;
+            opacity: 1;
         }
 
         .home-feature-title {
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: #000000;
         }
 
         .home-feature-desc {
             font-size: 16px;
-            opacity: 0.9;
+            color: #555555;
+            line-height: 1.7;
         }
 
         .btn-home {
-            padding: 25px 80px;
-            background: #FFFFFF;
-            color: #C8102E;
+            padding: 22px 70px;
+            background: #C8102E;
+            color: #FFFFFF;
             border: none;
-            border-radius: 12px;
-            font-size: 32px;
+            border-radius: 10px;
+            font-size: 22px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.18s ease;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
             margin: 0;
+            box-shadow: 0 4px 12px rgba(200, 16, 46, 0.25);
         }
 
         .btn-home:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+            background: #A00D25;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
         }
 
         .btn-home:active {
-            transform: translateY(-2px);
+            transform: translateY(0);
         }
 
         .btn-back-home {
@@ -889,6 +918,236 @@
             background: #C8102E;
             color: #FFFFFF;
         }
+
+        /* Receipt Screen */
+        .receipt-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: #F5F5F5;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .receipt-container {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 800px;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            position: relative;
+            margin: 40px auto;
+            min-height: auto;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #C8102E;
+        }
+
+        .receipt-logo {
+            font-size: 48px;
+            font-weight: 900;
+            color: #C8102E;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+
+        .receipt-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        .receipt-subtitle {
+            font-size: 18px;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+
+        .receipt-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .receipt-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .receipt-info-label {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .receipt-items {
+            margin-bottom: 30px;
+        }
+
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px 0;
+            border-bottom: 1px solid #E5E5E5;
+        }
+
+        .receipt-item:last-child {
+            border-bottom: none;
+        }
+
+        .receipt-item-info {
+            flex: 1;
+        }
+
+        .receipt-item-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .receipt-item-details {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 5px;
+        }
+
+        .receipt-item-request {
+            font-size: 14px;
+            color: #C8102E;
+            font-style: italic;
+            margin-top: 5px;
+            padding: 5px 10px;
+            background: #FFF5F5;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .receipt-item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #C8102E;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        .receipt-divider {
+            height: 2px;
+            background: #E5E5E5;
+            margin: 30px 0;
+        }
+
+        .receipt-summary {
+            margin-bottom: 30px;
+        }
+
+        .receipt-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            font-size: 18px;
+        }
+
+        .receipt-summary-label {
+            color: #666666;
+        }
+
+        .receipt-summary-value {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .receipt-summary-row.discount {
+            color: #C8102E;
+        }
+
+        .receipt-summary-row.total {
+            font-size: 28px;
+            padding-top: 20px;
+            border-top: 2px solid #C8102E;
+            margin-top: 10px;
+        }
+
+        .receipt-summary-row.total .receipt-summary-label {
+            color: #C8102E;
+            font-weight: 700;
+        }
+
+        .receipt-summary-row.total .receipt-summary-value {
+            color: #C8102E;
+            font-size: 32px;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            border-top: 2px dashed #E5E5E5;
+        }
+
+        .receipt-footer-message {
+            font-size: 16px;
+            color: #666666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .receipt-footer-note {
+            font-size: 14px;
+            color: #999999;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn-receipt {
+            padding: 18px 60px;
+            background: #C8102E;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .btn-receipt:hover {
+            background: #FFFFFF;
+            color: #C8102E;
+            border: 2px solid #C8102E;
+        }
+
+        .receipt-print-line {
+            display: none;
+        }
+
+        @media print {
+            .receipt-container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            .btn-receipt {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -896,31 +1155,40 @@
     <div class="screen active" id="homeScreen">
         <div class="home-screen">
             <div class="home-logo">KFC</div>
-            <div class="home-subtitle">2026 미래형 키오스크</div>
+            <div class="home-subtitle">2026 Future Kiosk</div>
             <div class="home-description">
-                요청사항을 입력할 수 있는 주문 시스템입니다.<br>
-                세부 요청사항, 할인/쿠폰, 메뉴 상세 정보를 쉽게 확인하고 주문하세요!
+                세부 요청사항을 입력할 수 있는<br>
+                개인화된 주문 시스템입니다
             </div>
             <div class="home-features">
                 <div class="home-feature">
                     <div class="home-feature-icon">🎤</div>
                     <div class="home-feature-title">음성 요청사항</div>
-                    <div class="home-feature-desc">음성으로 쉽게 요청사항 입력</div>
+                    <div class="home-feature-desc">음성으로 간편하게<br>요청사항 입력</div>
                 </div>
                 <div class="home-feature">
                     <div class="home-feature-icon">💰</div>
                     <div class="home-feature-title">할인/쿠폰</div>
-                    <div class="home-feature-desc">다양한 할인 혜택 쉽게 적용</div>
+                    <div class="home-feature-desc">다양한 할인 혜택<br>간단하게 적용</div>
                 </div>
                 <div class="home-feature">
                     <div class="home-feature-icon">📋</div>
                     <div class="home-feature-title">상세 정보</div>
-                    <div class="home-feature-desc">영양정보, 알레르기 정보 확인</div>
+                    <div class="home-feature-desc">영양정보 및<br>알레르기 정보 확인</div>
                 </div>
             </div>
             <button class="btn-home" onclick="showOrderScreen()">
                 주문 시작하기
             </button>
+        </div>
+    </div>
+
+    <!-- Receipt Screen -->
+    <div class="screen" id="receiptScreen">
+        <div class="receipt-screen">
+            <div class="receipt-container" id="receiptContainer">
+                <!-- Receipt content will be dynamically generated -->
+            </div>
         </div>
     </div>
 
@@ -1277,6 +1545,7 @@
             stopSpeaking();
             document.getElementById('homeScreen').classList.add('active');
             document.getElementById('orderScreen').classList.remove('active');
+            document.getElementById('receiptScreen').classList.remove('active');
             currentScreen = 'home';
             setTimeout(() => {
                 speak('홈 화면입니다. 주문을 시작하려면 주문 시작하기 버튼을 눌러주세요.');
@@ -1287,6 +1556,7 @@
             stopSpeaking();
             document.getElementById('homeScreen').classList.remove('active');
             document.getElementById('orderScreen').classList.add('active');
+            document.getElementById('receiptScreen').classList.remove('active');
             currentScreen = 'order';
             // Initialize order screen if needed
             if (cart.length === 0) {
@@ -1294,6 +1564,107 @@
             }
             setTimeout(() => {
                 speak('주문 화면입니다. 원하는 메뉴를 선택하거나 카테고리를 선택하여 메뉴를 확인하세요.');
+            }, 300);
+        }
+
+        function showReceiptScreen(receiptData) {
+            stopSpeaking();
+            document.getElementById('homeScreen').classList.remove('active');
+            document.getElementById('orderScreen').classList.remove('active');
+            document.getElementById('receiptScreen').classList.add('active');
+            currentScreen = 'receipt';
+            
+            const receiptContainer = document.getElementById('receiptContainer');
+            if (!receiptContainer) return;
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ko-KR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            });
+            const timeStr = now.toLocaleTimeString('ko-KR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            const orderNumber = 'KFC-' + Date.now().toString().slice(-6);
+            
+            let receiptHtml = `
+                <div class="receipt-header">
+                    <div class="receipt-logo">KFC</div>
+                    <div class="receipt-title">주문 영수증</div>
+                    <div class="receipt-subtitle">Order Receipt</div>
+                </div>
+                
+                <div class="receipt-info">
+                    <div class="receipt-info-item">
+                        <span class="receipt-info-label">주문 번호</span>
+                        <span>${orderNumber}</span>
+                    </div>
+                    <div class="receipt-info-item">
+                        <span class="receipt-info-label">주문 일시</span>
+                        <span>${dateStr}</span>
+                        <span>${timeStr}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-items">
+            `;
+            
+            receiptData.items.forEach(item => {
+                receiptHtml += `
+                    <div class="receipt-item">
+                        <div class="receipt-item-info">
+                            <div class="receipt-item-name">${item.name}</div>
+                            <div class="receipt-item-details">수량: ${item.quantity}개</div>
+                            ${item.request ? `<div class="receipt-item-request">💬 ${item.request}</div>` : ''}
+                        </div>
+                        <div class="receipt-item-price">${formatPrice(item.price * item.quantity)}</div>
+                    </div>
+                `;
+            });
+            
+            receiptHtml += `
+                </div>
+                
+                <div class="receipt-divider"></div>
+                
+                <div class="receipt-summary">
+                    <div class="receipt-summary-row">
+                        <span class="receipt-summary-label">주문 금액</span>
+                        <span class="receipt-summary-value">${formatPrice(receiptData.subtotal)}</span>
+                    </div>
+                    ${receiptData.discount > 0 ? `
+                    <div class="receipt-summary-row discount">
+                        <span class="receipt-summary-label">할인 금액</span>
+                        <span class="receipt-summary-value">-${formatPrice(receiptData.discount)}</span>
+                    </div>
+                    ` : ''}
+                    <div class="receipt-summary-row total">
+                        <span class="receipt-summary-label">총 결제 금액</span>
+                        <span class="receipt-summary-value">${formatPrice(receiptData.total)}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-footer">
+                    <div class="receipt-footer-message">
+                        주문이 완료되었습니다.<br>
+                        ${receiptData.hasRequest ? '요청사항이 직원에게 전달되었습니다.' : ''}
+                    </div>
+                    <div class="receipt-footer-note">
+                        감사합니다. 맛있는 식사 되세요!
+                    </div>
+                    <button class="btn-receipt" onclick="showHomeScreen()">
+                        홈으로 돌아가기
+                    </button>
+                </div>
+            `;
+            
+            receiptContainer.innerHTML = receiptHtml;
+            
+            setTimeout(() => {
+                speak(`주문이 완료되었습니다. 주문 번호는 ${orderNumber}입니다. 최종 결제 금액은 ${formatPrice(receiptData.total)}입니다.`, true);
             }, 300);
         }
 
@@ -1547,16 +1918,35 @@
             const item = findMenuItem(itemId);
             if (!item) return;
 
-            const request = document.getElementById('requestInput').value.trim();
-            const cartItem = {
-                ...item,
-                cartId: Date.now(),
-                quantity: 1,
-                request: request || ''
-            };
-
-            cart.push(cartItem);
             const requestInput = document.getElementById('requestInput');
+            const request = requestInput ? requestInput.value.trim() : '';
+            const requestKey = request || '';
+
+            // 같은 메뉴 ID와 같은 요청사항을 가진 항목이 있는지 확인
+            const existingItem = cart.find(cartItem => 
+                cartItem.id === itemId && cartItem.request === requestKey
+            );
+
+            if (existingItem) {
+                // 기존 항목의 수량 증가
+                existingItem.quantity += 1;
+                showNotification(`${item.name} 수량이 증가했습니다. (${existingItem.quantity}개)`);
+                speak(`${item.name} 수량이 ${existingItem.quantity}개로 증가했습니다.`);
+            } else {
+                // 새로운 항목 추가
+                const cartItem = {
+                    ...item,
+                    cartId: Date.now(),
+                    quantity: 1,
+                    request: requestKey
+                };
+
+                cart.push(cartItem);
+                showNotification(`${item.name}이(가) 장바구니에 추가되었습니다.`);
+                speak(`${item.name}이 장바구니에 추가되었습니다.`);
+            }
+
+            // 요청사항 입력 필드 초기화
             if (requestInput) {
                 requestInput.value = '';
             }
@@ -1564,8 +1954,6 @@
             
             updateCart();
             updateCartCount();
-            showNotification(`${item.name}이(가) 장바구니에 추가되었습니다.`);
-            speak(`${item.name}이 장바구니에 추가되었습니다.`);
         }
 
         // Remove from Cart
@@ -1715,64 +2103,83 @@
 
         // Checkout
         function checkout() {
-            if (cart.length === 0) {
-                showNotification('장바구니가 비어있습니다.');
-                speak('장바구니가 비어있습니다. 메뉴를 추가해주세요.');
-                return;
-            }
-
-            const requestInput = document.getElementById('requestInput');
-            const request = requestInput ? requestInput.value.trim() : '';
-            if (request) {
-                // Apply request to last item if there's a request in input
-                if (cart.length > 0) {
-                    cart[cart.length - 1].request = request;
+            try {
+                if (cart.length === 0) {
+                    showNotification('장바구니가 비어있습니다.');
+                    speak('장바구니가 비어있습니다. 메뉴를 추가해주세요.');
+                    return;
                 }
+
+                const requestInput = document.getElementById('requestInput');
+                const request = requestInput ? requestInput.value.trim() : '';
+                if (request) {
+                    // Apply request to last item if there's a request in input
+                    if (cart.length > 0) {
+                        cart[cart.length - 1].request = request;
+                    }
+                }
+
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                let discount = 0;
+
+                if (selectedDiscount === 'student') {
+                    discount = total * 0.1;
+                } else if (selectedDiscount === 'coupon1') {
+                    discount = total * 0.05;
+                } else if (selectedDiscount === 'coupon2') {
+                    discount = 3000;
+                }
+
+                const finalTotal = total - discount;
+                
+                // Check if there are any requests
+                const hasRequest = cart.some(item => item.request) || request;
+
+                // Prepare receipt data
+                const receiptData = {
+                    items: cart.map(item => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        request: item.request
+                    })),
+                    subtotal: total,
+                    discount: discount,
+                    total: finalTotal,
+                    hasRequest: hasRequest
+                };
+                
+                // Reset cart and settings BEFORE showing receipt
+                const oldCart = [...cart];
+                cart = [];
+                selectedDiscount = 'none';
+                if (requestInput) {
+                    requestInput.value = '';
+                }
+                currentRequest = '';
+                const discountOptions = document.querySelectorAll('.discount-option');
+                discountOptions.forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                const noneOption = document.querySelector('[data-discount="none"]');
+                if (noneOption) {
+                    noneOption.classList.add('selected');
+                }
+                updateCart();
+                renderMenu();
+                showNotification('주문이 완료되었습니다!');
+                
+                // Show receipt screen - MUST be called to show receipt
+                if (typeof showReceiptScreen === 'function') {
+                    showReceiptScreen(receiptData);
+                } else {
+                    console.error('showReceiptScreen function not found!');
+                    showNotification('영수증 화면을 불러올 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                showNotification('주문 처리 중 오류가 발생했습니다.');
             }
-
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            let discount = 0;
-
-            if (selectedDiscount === 'student') {
-                discount = total * 0.1;
-            } else if (selectedDiscount === 'coupon1') {
-                discount = total * 0.05;
-            } else if (selectedDiscount === 'coupon2') {
-                discount = 3000;
-            }
-
-            const finalTotal = total - discount;
-
-            const orderSummary = cart.map(item => 
-                `${item.name} x${item.quantity}${item.request ? ` (${item.request})` : ''}`
-            ).join('\n');
-
-            speak(`주문이 완료되었습니다. 최종 결제 금액은 ${formatPrice(finalTotal)}입니다. 요청사항이 직원에게 전달되었습니다.`, true);
-            
-            alert(`주문이 완료되었습니다!\n\n주문 내역:\n${orderSummary}\n\n할인: ${formatPrice(-discount)}\n최종 결제 금액: ${formatPrice(finalTotal)}\n\n요청사항이 직원에게 전달되었습니다.`);
-            
-            // Reset
-            cart = [];
-            selectedDiscount = 'none';
-            if (requestInput) {
-                requestInput.value = '';
-            }
-            currentRequest = '';
-            const discountOptions = document.querySelectorAll('.discount-option');
-            discountOptions.forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            const noneOption = document.querySelector('[data-discount="none"]');
-            if (noneOption) {
-                noneOption.classList.add('selected');
-            }
-            updateCart();
-            renderMenu();
-            showNotification('주문이 완료되었습니다!');
-            // Return to home after 2 seconds
-            setTimeout(() => {
-                showHomeScreen();
-            }, 2000);
         }
 
         // Request Input Change
